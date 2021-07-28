@@ -7,7 +7,12 @@ package twitterfake;
 
 import classes.MyTwitter;
 import classes.Perfil;
+import exceptions.MFPException;
+import exceptions.PIException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -60,8 +65,9 @@ public class NovoTweet extends javax.swing.JFrame {
         jTextField1 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
-        tfMensagem = new javax.swing.JTextField();
         bPublicar = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tfMensagem = new javax.swing.JTextArea();
 
         jTextField1.setText("jTextField1");
 
@@ -71,8 +77,6 @@ public class NovoTweet extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(102, 153, 255));
 
-        tfMensagem.setText("jTextField2");
-
         bPublicar.setText("Publicar Tweet");
         bPublicar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -80,24 +84,28 @@ public class NovoTweet extends javax.swing.JFrame {
             }
         });
 
+        tfMensagem.setColumns(20);
+        tfMensagem.setRows(5);
+        jScrollPane1.setViewportView(tfMensagem);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(tfMensagem)
-                .addContainerGap())
-            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(104, 104, 104)
                 .addComponent(bPublicar)
-                .addContainerGap(108, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 315, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(tfMensagem, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(bPublicar)
                 .addContainerGap(16, Short.MAX_VALUE))
@@ -118,7 +126,13 @@ public class NovoTweet extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void bPublicarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bPublicarActionPerformed
-        twitter.tweetar(perfil.getUsuario(), tfMensagem.getText());
+        try {
+            twitter.tweetar(perfil.getUsuario(), tfMensagem.getText());
+        } catch (PIException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro ao tweetar", JOptionPane.ERROR_MESSAGE);
+        } catch (MFPException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro ao tweetar", JOptionPane.ERROR_MESSAGE);
+        }
         tfMensagem.setText("");
         ViewPerfil pai = (ViewPerfil)parent;
         pai.carregarTimeLine();
@@ -163,7 +177,8 @@ public class NovoTweet extends javax.swing.JFrame {
     private javax.swing.JButton bPublicar;
     private javax.swing.JButton jButton1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField tfMensagem;
+    private javax.swing.JTextArea tfMensagem;
     // End of variables declaration//GEN-END:variables
 }

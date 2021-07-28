@@ -188,9 +188,15 @@ public class LoginCadastro extends javax.swing.JFrame {
            ((PessoaFisica)novoPerfil).setCpf(Long.parseLong(JtNumero.getText()));
        }
        
-       mytwitter.criarPerfil(novoPerfil);
-       JOptionPane.showMessageDialog(null, "Perfil criado com sucesso");
-       LimparCampos();
+        try {
+            mytwitter.criarPerfil(novoPerfil);
+            JOptionPane.showMessageDialog(null, "Perfil criado com sucesso");
+            LimparCampos();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Erro ao criar perfil", JOptionPane.ERROR_MESSAGE);
+        }
+
+       
        
     }//GEN-LAST:event_JbCadastrarMouseClicked
 

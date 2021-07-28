@@ -5,6 +5,7 @@
  */
 package classes;
 
+import exceptions.UJCException;
 import interfaces.IRepositorioUsuario;
 import java.util.ArrayList;
 
@@ -20,12 +21,12 @@ public class MyUsuarios implements IRepositorioUsuario {
     }
 
     @Override
-    public void cadastrar(Perfil usuario) {
+    public void cadastrar(Perfil usuario)throws UJCException {
         Perfil p = buscar(usuario.getUsuario());
         if(p == null)
             usuarios.add(usuario);
         else
-            System.out.println("classes.MyUsuarios.cadastrar()");
+            throw new UJCException(p.getUsuario());
     }
 
     @Override

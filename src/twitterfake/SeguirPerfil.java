@@ -8,7 +8,11 @@ package twitterfake;
 import classes.MyTwitter;
 import classes.Perfil;
 import classes.Tweet;
+import exceptions.PDException;
+import exceptions.PIException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -166,8 +170,15 @@ public class SeguirPerfil extends javax.swing.JFrame {
         if(segue)
             JOptionPane.showMessageDialog(null, "Você já segue este usuário");
         else{
-            twitter.seguir(seguidor.getUsuario(), seguido.getUsuario());
+            try {
+                twitter.seguir(seguidor.getUsuario(), seguido.getUsuario());
+            } catch (PIException ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro ao seguir usuario", JOptionPane.ERROR_MESSAGE);
+            } catch (PDException ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro ao seguir usuario", JOptionPane.ERROR_MESSAGE);
+            }
             JOptionPane.showMessageDialog(null, "Agora você está seguindo este usuário");
+            verificarSeguidor();
         }
         
     }//GEN-LAST:event_bSeguirMouseClicked
@@ -208,8 +219,9 @@ public class SeguirPerfil extends javax.swing.JFrame {
     }
     
     public void verificarSeguidor(){
-        if(seguido.getSeguidores().contains(seguidor)){
-            segue = true;
+        for(String s : seguido.getSeguidores()){
+            if(s.equals(seguidor.getUsuario()))
+                segue = true;
         }
     }
     public void recebeTwitter(MyTwitter t){
@@ -233,7 +245,14 @@ public class SeguirPerfil extends javax.swing.JFrame {
     
     
     public void carregarTimeLine() {
-        ArrayList<Tweet> timeline = twitter.timeline(seguido.getUsuario());
+        ArrayList<Tweet> timeline = null;
+        try {
+            timeline = twitter.timeline(seguido.getUsuario());
+        } catch (PIException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro ao carregar timeline", JOptionPane.ERROR_MESSAGE);
+        } catch (PDException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro ao carregar timeline", JOptionPane.ERROR_MESSAGE);
+        }
         
         DefaultTableModel modelo = (DefaultTableModel)tTimeline.getModel(); 
         modelo.setNumRows(0);

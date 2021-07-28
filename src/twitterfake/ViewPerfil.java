@@ -8,8 +8,13 @@ package twitterfake;
 import classes.MyTwitter;
 import classes.Perfil;
 import classes.Tweet;
+import exceptions.PDException;
+import exceptions.PIException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -194,8 +199,12 @@ public class ViewPerfil extends javax.swing.JFrame {
 
     private void bSearchMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bSearchMouseClicked
         Perfil u = twitter.repusuarios.buscar(jSearchPerfil.getText());
-        seguirPerfil = new SeguirPerfil(ViewPerfil.this, twitter, perfil, u);
-        seguirPerfil.setVisible(true);
+        if(u == null)
+            JOptionPane.showMessageDialog(null, "Usuário não encontrado", "Erro ao buscar usuário", JOptionPane.ERROR_MESSAGE);
+        else{
+            seguirPerfil = new SeguirPerfil(ViewPerfil.this, twitter, perfil, u);
+            seguirPerfil.setVisible(true);
+        }
     }//GEN-LAST:event_bSearchMouseClicked
 
     /**
@@ -262,7 +271,14 @@ public class ViewPerfil extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     public void carregarTimeLine() {
-        ArrayList<Tweet> timeline = twitter.timeline(perfil.getUsuario());
+        ArrayList<Tweet> timeline = null;
+        try {
+            timeline = twitter.timeline(perfil.getUsuario());
+        } catch (PIException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro ao carregar timeline", JOptionPane.ERROR_MESSAGE);
+        } catch (PDException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro ao carregar timeline", JOptionPane.ERROR_MESSAGE);
+        }
         
         DefaultTableModel modelo = (DefaultTableModel)tTimeline.getModel(); 
         modelo.setNumRows(0);
